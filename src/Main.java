@@ -1,3 +1,6 @@
+import userInterface.Entrance;
+import userInterface.PasswordAuthentication;
+
 /**
  * Created by maximgrozniy on 18.08.15.
  */
@@ -27,5 +30,9 @@
 
 
 public class Main {
+    public static void main(String[] args) {
+
+        Entrance entrance = new Entrance(new PasswordAuthentication("qwerty", "zxcvb"));
+    }
 
 }
