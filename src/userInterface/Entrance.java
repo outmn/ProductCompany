@@ -4,12 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 /**
  * Created by maximgrozniy on 17.09.15.
  */
-public class Entrance extends JFrame {
+public class Entrance extends JFrame implements Runnable{
 
     private Socket socket;
 
@@ -23,18 +26,19 @@ public class Entrance extends JFrame {
             Users.Customer.toString(),
             Users.SalesManager.toString(),
             Users.Administrator.toString()};
-    private PasswordAuthentication passwordAuthentication;
+
 
     public Entrance(Socket socket) {
         super("Entrance");
         this.socket = socket;
-        this.passwordAuthentication = passwordAuthentication;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(600, 500);
         this.setResizable(false);
         initPanel();
         add(panel);
         setVisible(true);
+
+        this.run();
 
 
     }
@@ -57,6 +61,7 @@ public class Entrance extends JFrame {
             password.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    checkPassword();
 
                 }
             });
@@ -69,19 +74,7 @@ public class Entrance extends JFrame {
             enterButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    switch (passwordAuthentication.check(userBox.getSelectedIndex(), password.getPassword())) {
-                        case "Administrator":
-                            System.out.println("Administrator");
-                            dispose();
-                            AdminPanel adminPanel = new AdminPanel();
-                            break;
-                        case "Sales manager":
-                            System.out.println("Sales manager");
-                            break;
-                        case "Customer":
-                            System.out.println("Customer");
-                    }
-
+                    checkPassword();
 
                 }
             });
@@ -103,4 +96,41 @@ public class Entrance extends JFrame {
 
     }
 
+    private void checkPassword() {
+
+        try {
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+
+            out.writeInt(userBox.getSelectedIndex());
+
+            String passWord = "";
+            char [] pass = password.getPassword();
+
+            for (int i = 0; i < pass.length; i++) {
+                passWord += pass[i];
+            }
+
+            out.writeUTF(passWord);
+
+            if (in.readBoolean()) {
+                newWindow();
+            }
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void newWindow() {
+        dispose();
+        new WindowsManager(userBox.getSelectedIndex(), socket);
+        System.out.println("newWindow");
+
+    }
+
+    @Override
+    public void run() {
+
+    }
 }
