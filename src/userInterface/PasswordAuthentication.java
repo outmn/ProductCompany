@@ -8,10 +8,13 @@ public class PasswordAuthentication {
     private int login;
     private String administrativePassword;
     private String salesPassword;
+    private String customerPassword;
 
-    public PasswordAuthentication(String administrativePassword, String salesPassword) {
-        this.administrativePassword = administrativePassword;
+    public PasswordAuthentication(String customerPasswordString, String salesPassword, String administrativePassword) {
+        this.customerPassword = customerPasswordString;
         this.salesPassword = salesPassword;
+        this.administrativePassword = administrativePassword;
+
     }
 
     private boolean checkPassword(String password, String enteredPassword) {
@@ -28,6 +31,9 @@ public class PasswordAuthentication {
 
         switch (login) {
             case 0:
+                if (checkPassword(customerPassword, enteredPassword)) {
+                    return "Customer";
+                }
 
                 break;
             case 1:

@@ -32,7 +32,7 @@ import userInterface.PasswordAuthentication;
 public class Main {
     public static void main(String[] args) {
 
-        Entrance entrance = new Entrance(new PasswordAuthentication("qwerty", "zxcvb"));
+        Entrance entrance = new Entrance(new PasswordAuthentication("","qwerty", "zxcvb"));
     }
 
 }

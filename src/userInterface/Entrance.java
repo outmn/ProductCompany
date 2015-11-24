@@ -4,11 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Socket;
 
 /**
  * Created by maximgrozniy on 17.09.15.
  */
 public class Entrance extends JFrame {
+
+    private Socket socket;
 
     private JPanel panel;
     private JComboBox userBox;
@@ -22,8 +25,9 @@ public class Entrance extends JFrame {
             Users.Administrator.toString()};
     private PasswordAuthentication passwordAuthentication;
 
-    public Entrance(PasswordAuthentication passwordAuthentication) {
+    public Entrance(Socket socket) {
         super("Entrance");
+        this.socket = socket;
         this.passwordAuthentication = passwordAuthentication;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(600, 500);
@@ -68,6 +72,8 @@ public class Entrance extends JFrame {
                     switch (passwordAuthentication.check(userBox.getSelectedIndex(), password.getPassword())) {
                         case "Administrator":
                             System.out.println("Administrator");
+                            dispose();
+                            AdminPanel adminPanel = new AdminPanel();
                             break;
                         case "Sales manager":
                             System.out.println("Sales manager");
