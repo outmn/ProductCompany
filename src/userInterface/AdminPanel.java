@@ -1,7 +1,5 @@
 package userInterface;
 
-import sun.plugin2.ipc.windows.WindowsEvent;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,56 +10,42 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by maximgrozniy on 18.09.15.
  */
-public class AdminPanel extends JFrame implements Runnable {
+public class AdminPanel implements Runnable {
     private Socket socket;
-    private JButton addGroup, delGroup, editGroup,addSubGroup, delSubGroup, editSubGroup, addProduct, delProduct, editProduct, statistic, searchButton;
+
+    private JFrame mainFrame;
+
+    private JButton addGroup, delGroup, editGroup,
+            addSubGroup, delSubGroup, editSubGroup,
+            addProduct, delProduct, editProduct,
+            statistic, searchButton;
+
     private JTextField search;
     private JTable productInfo;
 
-    private JPanel mainPanel;
+    private JPanel controlPanel;
+    private JPanel clarificationPanel;
 
 
     // additional panels for buttons
-    private JPanel addGroupPanel;
-    private JPanel delGroupPanel;
-    private JPanel editGroupPanel;
-
-    private JPanel addSubGroupPanel;
-    private JPanel delSubGroupPanel;
-    private JPanel editSubGroupPanel;
-
-    private JPanel addProductPanel;
-    private JPanel delProductPanel;
-    private JPanel editProductPanel;
-
-    private JPanel statisticPanel;
-    private JPanel searchResultPanel;
+    private JPanel addGroupPanel, delGroupPanel, editGroupPanel;
+    private JPanel addSubGroupPanel, delSubGroupPanel, editSubGroupPanel;
+    private JPanel addProductPanel, delProductPanel, editProductPanel;
+    private JPanel statisticPanel, searchResultPanel;
     // end
+
+    private CardLayout cardLayout;
 
 
     DataInputStream in;
     DataOutputStream out;
 
     public AdminPanel(Socket socket) {
-        super("Administrative Panel");
-        System.out.println("admin");
-
         this.socket = socket;
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        this.setSize(1200, 1000);
-        //this.setResizable(false);
-
-        initialisation();
-        add(mainPanel);
-        setVisible(true);
-
 
         try {
             in = new DataInputStream(socket.getInputStream());
@@ -70,24 +54,67 @@ public class AdminPanel extends JFrame implements Runnable {
             exception.printStackTrace();
         }
 
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-                try {
-                    out.writeUTF("Close");
-                    socket.close();
-
-                } catch (IOException i) {
-                    i.printStackTrace();
-                }
-            }
-        });
-
         this.run();
+
+        createAndShowGUI();
 
 
     }
+
+
+    private void createAndShowGUI() {
+        mainFrame = new JFrame("Administrative Panel");
+        mainFrame.setSize(1100,600);
+        mainFrame.setLayout(null);
+        mainFrame.setLocationRelativeTo(null);
+
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        initControlPanel();
+        initClarificationPanel();
+
+        initAddGroupPanel();
+        initAddSubGroupPanel();
+
+        clarificationPanel.add("AddGroup", addGroupPanel);
+        clarificationPanel.add("AddSubGroup", addSubGroupPanel);
+
+        mainFrame.add(controlPanel);
+        mainFrame.add(clarificationPanel);
+
+        mainFrame.setVisible(true);
+    }
+
+
+
+    private void initControlPanel() {
+        if (controlPanel == null) {
+            controlPanel = new JPanel(null);
+            controlPanel.setBounds(0, 0, 800, 600);
+
+            initButons();
+
+        }
+    }
+
+
+    private void initClarificationPanel() {
+        if (clarificationPanel == null) {
+            clarificationPanel = new JPanel();
+            clarificationPanel.setBackground(Color.CYAN);
+
+            clarificationPanel.setBounds(800, 0, 300, 600);
+
+            clarificationPanel.setLayout(new CardLayout());
+
+            clarificationPanel.add(new JButton("Button"));
+
+            cardLayout = (CardLayout)(clarificationPanel.getLayout());
+        }
+
+    }
+
+
 
     // initialisation of adding panels
     private void initAddGroupPanel() {
@@ -113,10 +140,10 @@ public class AdminPanel extends JFrame implements Runnable {
         addGroupPanel.add(addG);
     }
 
-    private void initaddSubGroupPanel() {
+    private void initAddSubGroupPanel() {
         addSubGroupPanel = new JPanel(null);
 
-        JLabel name = new JLabel("Имя групы");
+        JLabel name = new JLabel("Имя Подгрупы");
         name.setBounds(0, 0, 100, 25);
 
         JTextField nameText = new JTextField();
@@ -143,13 +170,7 @@ public class AdminPanel extends JFrame implements Runnable {
 
 
 
-    private void initialisation() {
-
-
-
-        if (mainPanel == null) {
-            mainPanel = new JPanel(new CardLayout());
-        }
+    private void initButons() {
 
         if (addGroup == null) {
             addGroup = new JButton("Add Group");
@@ -220,31 +241,31 @@ public class AdminPanel extends JFrame implements Runnable {
             search.setBounds(310, 10, 840, 50);
         }
 
-        Action action = new Action();
-        addGroup.addActionListener(action);
-        delGroup.addActionListener(action);
-        editGroup.addActionListener(action);
-        addSubGroup.addActionListener(action);
-        delSubGroup.addActionListener(action);
-        editSubGroup.addActionListener(action);
-        addProduct.addActionListener(action);
-        delProduct.addActionListener(action);
-        editProduct.addActionListener(action);
-        statistic.addActionListener(action);
-        searchButton.addActionListener(action);
+        ActionAdministrator actionAdministrator = new ActionAdministrator();
+        addGroup.addActionListener(actionAdministrator);
+        delGroup.addActionListener(actionAdministrator);
+        editGroup.addActionListener(actionAdministrator);
+        addSubGroup.addActionListener(actionAdministrator);
+        delSubGroup.addActionListener(actionAdministrator);
+        editSubGroup.addActionListener(actionAdministrator);
+        addProduct.addActionListener(actionAdministrator);
+        delProduct.addActionListener(actionAdministrator);
+        editProduct.addActionListener(actionAdministrator);
+        statistic.addActionListener(actionAdministrator);
+        searchButton.addActionListener(actionAdministrator);
 
-        mainPanel.add(addGroup);
-        mainPanel.add(delGroup);
-        mainPanel.add(editGroup);
-        mainPanel.add(addSubGroup);
-        mainPanel.add(delSubGroup);
-        mainPanel.add(editSubGroup);
-        mainPanel.add(addProduct);
-        mainPanel.add(delProduct);
-        mainPanel.add(editProduct);
-        mainPanel.add(statistic);
-        mainPanel.add(searchButton);
-        mainPanel.add(search);
+        controlPanel.add(addGroup);
+        controlPanel.add(delGroup);
+        controlPanel.add(editGroup);
+        controlPanel.add(addSubGroup);
+        controlPanel.add(delSubGroup);
+        controlPanel.add(editSubGroup);
+        controlPanel.add(addProduct);
+        controlPanel.add(delProduct);
+        controlPanel.add(editProduct);
+        controlPanel.add(statistic);
+        controlPanel.add(searchButton);
+        controlPanel.add(search);
 
 
     }
@@ -263,23 +284,27 @@ public class AdminPanel extends JFrame implements Runnable {
 
 
 
-    private class Action implements ActionListener {
+    private class ActionAdministrator implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
                 if (e.getSource() == addGroup) {
                     out.writeUTF("addGroup");
-//                    new AddGroupWin(socket);
+                    cardLayout.show(clarificationPanel, "AddGroup");
+
+
                 } else if (e.getSource() == delGroup) {
                     out.writeUTF("delGroup");
-//                    new DelGroupWin(socket);
+                    cardLayout.show(clarificationPanel, "DelGroup");
+
                 } else if (e.getSource() == editGroup) {
                     out.writeUTF("editGroup");
 //                    new EditGroupWin(socket);
                 } else if (e.getSource() == addSubGroup) {
                     out.writeUTF("addSubGroup");
-//                    new AddSubGroupWin(socket);
+                    cardLayout.show(clarificationPanel, "AddSubGroup");
+
                 } else if (e.getSource() == delSubGroup) {
                     out.writeUTF("delSubGroup");
 //                    new DelSubGroupWin(socket);
