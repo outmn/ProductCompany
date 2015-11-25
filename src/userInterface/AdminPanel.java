@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by maximgrozniy on 18.09.15.
  */
-public class AdminPanel extends JFrame implements Runnable, NextableFrame {
+public class AdminPanel extends JFrame implements Runnable {
     private Socket socket;
     private JButton addGroup, delGroup, editGroup,addSubGroup, delSubGroup, editSubGroup, addProduct, delProduct, editProduct, statistic, searchButton;
     private JTextField search;
@@ -183,74 +183,7 @@ public class AdminPanel extends JFrame implements Runnable, NextableFrame {
     }
 
 
-    //////////////////////////////////////////////////////////
 
-    private List<NextableFrame> windows = new ArrayList<NextableFrame>();
-
-    public void addFrame(NextableFrame f) {
-        windows.add(f);
-        f.addNextableListener(this);
-    }
-
-    public void addFrame(int i, NextableFrame f) {
-        windows.add(i, f);
-        f.addNextableListener(this);
-    }
-
-    public void removeFrame(NextableFrame f) {
-        int idx = windows.indexOf(f);
-        if (idx >= 0) {
-            windows.remove(idx).removeNextableListener(this);
-        }
-    }
-
-    public void show(int idx) {
-        for (int i = 0; i < windows.size(); i++) {
-            windows.get(i).setVisible(i == idx);
-        }
-    }
-
-    public void show(NextableFrame frame) {
-        for (NextableFrame f : windows) {
-            f.setVisible(f == frame);
-        }
-    }
-
-    public void prevWin(NextableFrame f) {
-        int idx = windows.indexOf(f);
-        if (idx == 0) {
-            show(windows.size() - 1);
-        }
-        else if (idx > 0) {
-            show(--idx);
-        }
-    }
-
-    public void nextWin(NextableFrame f) {
-        int idx = windows.indexOf(f);
-        if (idx == windows.size() - 1) {
-            show(0);
-        }
-        else if (idx > -1) {
-            show(++idx);
-        }
-    }
-
-    @Override
-    public void addNextableListener(NextableListener l) {
-
-    }
-
-    @Override
-    public void removeNextableListener(NextableListener l) {
-
-    }
-
-    @Override
-    public NextableListener[] getNextableListeners() {
-        return new NextableListener[0];
-    }
-    ///////////////////////////////////////////////////////////
 
 
     private class Action implements ActionListener {
