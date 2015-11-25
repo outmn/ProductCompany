@@ -3,6 +3,7 @@ package userInterface;
 import sun.plugin2.ipc.windows.WindowsEvent;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -23,7 +24,26 @@ public class AdminPanel extends JFrame implements Runnable {
     private JTextField search;
     private JTable productInfo;
 
-    private JPanel panel;
+    private JPanel mainPanel;
+
+
+    // additional panels for buttons
+    private JPanel addGroupPanel;
+    private JPanel delGroupPanel;
+    private JPanel editGroupPanel;
+
+    private JPanel addSubGroupPanel;
+    private JPanel delSubGroupPanel;
+    private JPanel editSubGroupPanel;
+
+    private JPanel addProductPanel;
+    private JPanel delProductPanel;
+    private JPanel editProductPanel;
+
+    private JPanel statisticPanel;
+    private JPanel searchResultPanel;
+    // end
+
 
     DataInputStream in;
     DataOutputStream out;
@@ -39,7 +59,7 @@ public class AdminPanel extends JFrame implements Runnable {
         //this.setResizable(false);
 
         initialisation();
-        add(panel);
+        add(mainPanel);
         setVisible(true);
 
 
@@ -69,9 +89,66 @@ public class AdminPanel extends JFrame implements Runnable {
 
     }
 
+    // initialisation of adding panels
+    private void initAddGroupPanel() {
+        addGroupPanel = new JPanel(null);
+
+        JLabel name = new JLabel("Имя групы");
+        name.setBounds(0, 0, 100, 25);
+
+        JTextField nameText = new JTextField();
+        nameText.setBounds(100, 0, 200, 25);
+
+        JButton addG = new JButton("ДОБАВИТЬ");
+        addG.setBounds(0, 350, 300, 50);
+        addG.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        addGroupPanel.add(name);
+        addGroupPanel.add(nameText);
+        addGroupPanel.add(addG);
+    }
+
+    private void initaddSubGroupPanel() {
+        addSubGroupPanel = new JPanel(null);
+
+        JLabel name = new JLabel("Имя групы");
+        name.setBounds(0, 0, 100, 25);
+
+        JTextField nameText = new JTextField();
+        nameText.setBounds(100, 0, 200, 25);
+
+        JButton addG = new JButton("ДОБАВИТЬ");
+        addG.setBounds(0, 350, 300, 50);
+        addG.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        addSubGroupPanel.add(name);
+        addSubGroupPanel.add(nameText);
+        addSubGroupPanel.add(addG);
+    }
+    // ens
+
+
+
+
+
+
+
     private void initialisation() {
-        if (panel == null) {
-            panel = new JPanel(null);
+
+
+
+        if (mainPanel == null) {
+            mainPanel = new JPanel(new CardLayout());
         }
 
         if (addGroup == null) {
@@ -156,18 +233,18 @@ public class AdminPanel extends JFrame implements Runnable {
         statistic.addActionListener(action);
         searchButton.addActionListener(action);
 
-        panel.add(addGroup);
-        panel.add(delGroup);
-        panel.add(editGroup);
-        panel.add(addSubGroup);
-        panel.add(delSubGroup);
-        panel.add(editSubGroup);
-        panel.add(addProduct);
-        panel.add(delProduct);
-        panel.add(editProduct);
-        panel.add(statistic);
-        panel.add(searchButton);
-        panel.add(search);
+        mainPanel.add(addGroup);
+        mainPanel.add(delGroup);
+        mainPanel.add(editGroup);
+        mainPanel.add(addSubGroup);
+        mainPanel.add(delSubGroup);
+        mainPanel.add(editSubGroup);
+        mainPanel.add(addProduct);
+        mainPanel.add(delProduct);
+        mainPanel.add(editProduct);
+        mainPanel.add(statistic);
+        mainPanel.add(searchButton);
+        mainPanel.add(search);
 
 
     }
